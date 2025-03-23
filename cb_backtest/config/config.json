@@ -1,0 +1,33 @@
+{
+    "data": {
+        "cb_data_path": "/Users/yiwei/Desktop/git/cb_data.pq",
+        "index_data_path": "/Users/yiwei/Desktop/git/index.pq",
+        "start_date": "20220801",
+        "end_date": "20251231"
+    },
+    "strategies": [
+        {
+            "exclude_conditions": [
+                "close < 102",
+                "close > 155",
+                "left_years < 0.7",
+                "amount < 1000"
+
+            ],
+            "score_factors": [
+                "bond_prem",
+                "ytm",
+                "turnover_5"
+            ],
+            "weights": [
+                -10,
+                10,
+                5
+            ],
+            "hold_num": 5,
+            "stop_profit": 0.03,
+            "fee_rate": 0.002
+        }
+    ],
+    "output_path": "result/backtest_output.xlsx"
+}
