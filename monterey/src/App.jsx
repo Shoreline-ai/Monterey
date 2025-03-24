@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import Backtest from './backtest/Backtest'
+import ConvertibleBondsBacktest from './backtest/ConvertibleBondsBacktest'
 import './App.css'
 
 function App() {
   return (
     <div className="app">
-      <Backtest />
+      <ConvertibleBondsBacktest />
     </div>
   )
 }
