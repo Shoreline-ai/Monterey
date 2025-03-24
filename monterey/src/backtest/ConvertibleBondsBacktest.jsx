@@ -4,50 +4,116 @@ import './ConvertibleBondsBacktest.css';
 export default function ConvertibleBondsBacktest() {
   const COMPARATORS = ['<', '>', '==', '<=', '>='];
 
-  // State for data section matching config.json
-  const [data, setData] = useState({
-    cb_data_path: '',
-    index_data_path: '',
-    start_date: '2022-08-01',
-    end_date: '2025-12-31'
-  });
-
-  // State for strategy section matching config.json
-  const [strategy, setStrategy] = useState({
-    exclude_conditions: {
-      price: {
-        enabled: true,
-        conditions: [
-          { comparator: '<', value: 102 },
-          { comparator: '>', value: 155 }
-        ]
-      },
-      duration: {
-        enabled: true,
-        conditions: [
-          { comparator: '<', value: 0.7 }
-        ]
-      },
-      volume: {
-        enabled: true,
-        conditions: [
-          { comparator: '<', value: 1000 }
-        ]
-      }
+  // Initial state with values
+  const initialState = {
+    data: {
+      cb_data_path: '',
+      index_data_path: '',
+      start_date: '2022-08-01',
+      end_date: '2025-12-31'
     },
-    score_factors: ['bond_prem', 'ytm', 'turnover_5'],
-    weights: [-10, 10, 5],
-    hold_num: 5,
-    stop_profit: 0.03,
-    fee_rate: 0.002
-  });
+    strategy: {
+      exclude_conditions: {
+        price: {
+          enabled: true,
+          conditions: [
+            { comparator: '<', value: 102 },
+            { comparator: '>', value: 155 }
+          ]
+        },
+        duration: {
+          enabled: true,
+          conditions: [
+            { comparator: '<', value: 0.7 }
+          ]
+        },
+        volume: {
+          enabled: true,
+          conditions: [
+            { comparator: '<', value: 1000 }
+          ]
+        }
+      },
+      score_factors: ['bond_prem', 'ytm', 'turnover_5'],
+      weights: [-10, 10, 5],
+      hold_num: 5,
+      stop_profit: 0.03,
+      fee_rate: 0.002
+    }
+  };
 
-  // Add new state for JSON output
+  // Empty state for reset - keep score_factors structure
+  const emptyState = {
+    data: {
+      cb_data_path: '',
+      index_data_path: '',
+      start_date: '',
+      end_date: ''
+    },
+    strategy: {
+      exclude_conditions: {
+        price: {
+          enabled: false,
+          conditions: [
+            { comparator: '', value: '' }
+          ]
+        },
+        duration: {
+          enabled: false,
+          conditions: [
+            { comparator: '', value: '' }
+          ]
+        },
+        volume: {
+          enabled: false,
+          conditions: [
+            { comparator: '', value: '' }
+          ]
+        }
+      },
+      score_factors: ['bond_prem', 'ytm', 'turnover_5'],
+      weights: [0, 0, 0],
+      hold_num: '',
+      stop_profit: '',
+      fee_rate: ''
+    }
+  };
+
+  // States
+  const [data, setData] = useState(initialState.data);
+  const [strategy, setStrategy] = useState(initialState.strategy);
   const [jsonOutput, setJsonOutput] = useState(null);
 
-  // Convert yyyy-MM-dd to yyyyMMdd for API/storage
+  // Reset handler - make sure to set jsonOutput to null
+  const handleReset = () => {
+    setData(emptyState.data);
+    setStrategy({
+      ...emptyState.strategy,
+      score_factors: strategy.score_factors,
+      weights: strategy.score_factors.map(() => 0)
+    });
+    setJsonOutput(null); // This will remove the Generated Configuration box
+    console.log('Reset clicked, all values cleared and output removed');
+  };
+
+  // Date format conversion functions
   const getStorageFormat = (dateStr) => {
     return dateStr.replace(/-/g, '');
+  };
+
+  // Generate config handler
+  const handleGenerateConfig = () => {
+    const configData = {
+      data: {
+        ...data,
+        start_date: data.start_date ? getStorageFormat(data.start_date) : '',
+        end_date: data.end_date ? getStorageFormat(data.end_date) : ''
+      },
+      strategies: [strategy],
+      output_path: 'result/backtest_output.xlsx'
+    };
+    setJsonOutput(configData);
+    console.log('Generated config:', configData);
   };
 
   // Handler for date changes
@@ -159,56 +225,61 @@ export default function ConvertibleBondsBacktest() {
     return conditions;
   };
 
-  // Modified submit handler
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const config = {
-      data,
-      strategies: [{
-        ...strategy,
-        exclude_conditions: generateConditionStrings()
-      }],
-      output_path: 'result/backtest_output.xlsx'
-    };
-    
-    // Update the JSON output state
-    setJsonOutput(config);
-  };
-
   return (
     <div className="backtest-container">
       <h1>Convertible Bond Backtesting</h1>
       
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        const config = {
+          data,
+          strategies: [{
+            ...strategy,
+            exclude_conditions: generateConditionStrings()
+          }],
+          output_path: 'result/backtest_output.xlsx'
+        };
+        
+        // Update the JSON output state
+        setJsonOutput(config);
+      }}>
         {/* Data Section */}
-        <section className="data-section">
+        <section className="config-section">
           <h2>Data Configuration</h2>
-          <div className="input-group">
-            <label>Start Date:</label>
-            <input
-              type="date"
-              value={data.start_date}
-              onChange={handleDateChange('start_date')}
-            />
-            <span className="date-value">
-              yyyyMMdd: {getDisplayFormat(data.start_date)}
-            </span>
-          </div>
-          <div className="input-group">
-            <label>End Date:</label>
-            <input
-              type="date"
-              value={data.end_date}
-              onChange={handleDateChange('end_date')}
-            />
-            <span className="date-value">
-              yyyyMMdd: {getDisplayFormat(data.end_date)}
-            </span>
+          <div className="section-content">
+            <div className="input-group">
+              <label>Start Date:</label>
+              <input
+                type="date"
+                value={data.start_date}
+                onChange={(e) => setData(prev => ({
+                  ...prev,
+                  start_date: e.target.value
+                }))}
+              />
+              <span className="date-value">
+                {data.start_date && `yyyyMMdd: ${getStorageFormat(data.start_date)}`}
+              </span>
+            </div>
+            <div className="input-group">
+              <label>End Date:</label>
+              <input
+                type="date"
+                value={data.end_date}
+                onChange={(e) => setData(prev => ({
+                  ...prev,
+                  end_date: e.target.value
+                }))}
+              />
+              <span className="date-value">
+                {data.end_date && `yyyyMMdd: ${getStorageFormat(data.end_date)}`}
+              </span>
+            </div>
           </div>
         </section>
 
         {/* Updated Exclude Conditions Section */}
-        <section className="exclude-conditions-section">
+        <section className="config-section">
           <h2>Exclude Conditions</h2>
           
           {/* Price Conditions */}
@@ -372,63 +443,81 @@ export default function ConvertibleBondsBacktest() {
         </section>
 
         {/* Strategy Section */}
-        <section className="strategy-section">
+        <section className="config-section">
           <h2>Strategy Configuration</h2>
           
-          <div className="input-group">
-            <label>Hold Number:</label>
-            <input
-              type="number"
-              value={strategy.hold_num}
-              onChange={(e) => handleStrategyChange('hold_num', parseInt(e.target.value))}
-            />
-          </div>
+          <div className="section-content">
+            <div className="input-group">
+              <label>Hold Number:</label>
+              <input
+                type="number"
+                value={strategy.hold_num}
+                onChange={(e) => handleStrategyChange('hold_num', parseInt(e.target.value))}
+              />
+            </div>
 
-          <div className="input-group">
-            <label>Stop Profit (%):</label>
-            <input
-              type="number"
-              step="0.01"
-              value={strategy.stop_profit * 100}
-              onChange={(e) => handleStrategyChange('stop_profit', parseFloat(e.target.value) / 100)}
-            />
-          </div>
+            <div className="input-group">
+              <label>Stop Profit (%):</label>
+              <input
+                type="number"
+                step="0.01"
+                value={strategy.stop_profit * 100}
+                onChange={(e) => handleStrategyChange('stop_profit', parseFloat(e.target.value) / 100)}
+              />
+            </div>
 
-          <div className="input-group">
-            <label>Fee Rate (%):</label>
-            <input
-              type="number"
-              step="0.001"
-              value={strategy.fee_rate * 100}
-              onChange={(e) => handleStrategyChange('fee_rate', parseFloat(e.target.value) / 100)}
-            />
-          </div>
+            <div className="input-group">
+              <label>Fee Rate (%):</label>
+              <input
+                type="number"
+                step="0.001"
+                value={strategy.fee_rate * 100}
+                onChange={(e) => handleStrategyChange('fee_rate', parseFloat(e.target.value) / 100)}
+              />
+            </div>
 
-          <div className="factors-section">
-            <h3>Score Factors</h3>
-            {strategy.score_factors.map((factor, index) => (
-              <div key={factor} className="factor-group">
-                <label>{factor}:</label>
-                <input
-                  type="number"
-                  value={strategy.weights[index]}
-                  onChange={(e) => {
-                    const newWeights = [...strategy.weights];
-                    newWeights[index] = parseInt(e.target.value);
-                    handleStrategyChange('weights', newWeights);
-                  }}
-                />
-              </div>
-            ))}
+            <div className="factors-section">
+              <h3>Score Factors</h3>
+              {strategy.score_factors.map((factor, index) => (
+                <div key={factor} className="factor-group">
+                  <label>{factor}:</label>
+                  <input
+                    type="number"
+                    value={strategy.weights[index]}
+                    onChange={(e) => {
+                      const newWeights = [...strategy.weights];
+                      newWeights[index] = Number(e.target.value);
+                      setStrategy(prev => ({
+                        ...prev,
+                        weights: newWeights
+                      }));
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        <button type="submit" className="submit-button">
-          Generate Backtest
-        </button>
+        {/* Buttons Section */}
+        <div className="buttons-container">
+          <button 
+            className="generate-button"
+            type="submit"
+            onClick={handleGenerateConfig}
+          >
+            Generate Backtest
+          </button>
+          <button 
+            className="reset-button"
+            onClick={handleReset}
+          >
+            Reset
+          </button>
+        </div>
       </form>
 
-      {/* JSON Output Section */}
+      {/* JSON Output Section - will be removed when jsonOutput is null */}
       {jsonOutput && (
         <section className="json-output-section">
           <h2>Generated Configuration</h2>
