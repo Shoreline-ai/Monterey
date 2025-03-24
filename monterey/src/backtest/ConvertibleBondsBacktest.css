@@ -1,0 +1,196 @@
+.backtest-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+  }
+  
+  section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: left;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .input-group {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-group label {
+    min-width: 150px;
+    color: #666;
+  }
+  
+  input[type="number"],
+  input[type="date"] {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 200px;
+  }
+  
+  .factors-section {
+    margin-top: 2rem;
+  }
+  
+  .factor-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .factor-group label {
+    min-width: 150px;
+    color: #666;
+  }
+  
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .submit-button:hover {
+    background: #1557b0;
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    section {
+      background: #1a1a1a;
+    }
+  
+    h1, h2 {
+      color: #fff;
+    }
+  
+    .input-group label,
+    .factor-group label {
+      color: #ccc;
+    }
+  
+    input[type="number"],
+    input[type="date"] {
+      background: #333;
+      color: #fff;
+      border-color: #444;
+    }
+  }
+
+  .exclude-conditions-section {
+    margin-top: 2rem;
+    text-align: left;
+  }
+
+  .exclude-conditions-section h2 {
+    text-align: left;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .backtest-container > h1 {
+    text-align: center;
+  }
+
+  .condition-category {
+    text-align: left;
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .condition-header {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .condition-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .condition-checkbox input[type="checkbox"] {
+    margin: 0;
+  }
+
+  .condition-checkbox h3 {
+    display: inline;
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  /* Update JSON display styles */
+.json-display {
+  position: relative;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  text-align: left;
+  margin: 0;  /* Remove any default margins */
+}
+
+.json-display pre {
+  margin: 0;
+  white-space: pre;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  text-align: left;
+  padding: 0;
+  display: block;  /* Ensure block display */
+  width: 100%;    /* Take full width */
+}
+
+/* Remove any center alignment from container */
+.json-output-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  display: block;  /* Ensure block display */
+  width: 100%;    /* Take full width */
+}
+
+/* Force left alignment for all text content */
+.json-display * {
+  text-align: left !important;
+}
+
+/* Position the copy button without affecting alignment */
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
