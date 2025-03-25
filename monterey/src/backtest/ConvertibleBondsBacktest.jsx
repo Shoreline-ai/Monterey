@@ -114,6 +114,30 @@ export default function ConvertibleBondsBacktest() {
     };
     setJsonOutput(configData);
     console.log('Generated config:', configData);
+    // if (false) {
+    //     try {
+    //         const response = await fetch('https://your-api-endpoint.com/backtest', {
+    //           method: 'POST',
+    //           headers: {
+    //             'Content-Type': 'application/json',
+    //           },
+    //           body: JSON.stringify(configData)
+    //         });
+        
+    //         if (!response.ok) {
+    //           throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+        
+    //         const result = await response.json();
+    //         console.log('Server response:', result);
+    //         alert('Backtest configuration submitted successfully!');
+    //       } catch (err) {
+    //         console.error('Error submitting backtest:', err);
+    //         setError(err.message);
+    //       } finally {
+    //         setIsLoading(false);
+    //       }
+    // }
   };
 
   // Handler for date changes
