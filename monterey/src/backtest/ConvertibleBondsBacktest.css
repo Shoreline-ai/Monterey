@@ -2,6 +2,8 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
+    position: relative;
+    z-index: 1;
   }
   
   h1 {
@@ -28,6 +30,8 @@
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
+    position: relative;
+    z-index: 2;
   }
   
   .input-group label {
@@ -36,26 +40,46 @@
   }
   
   input[type="number"],
-  input[type="date"] {
+  input[type="date"],
+  select,
+  button {
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
     width: 200px;
+    cursor: pointer;
+    user-select: auto;
   }
   
   .factors-section {
     margin-top: 2rem;
+    text-align: left;
+  }
+  
+  .factors-section h3 {
+    text-align: left;
+    margin-bottom: 1rem;
+    color: #333;
   }
   
   .factor-group {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
+    max-width: 400px;
   }
   
   .factor-group label {
     min-width: 150px;
     color: #666;
+    text-align: left;
+  }
+  
+  .factor-group input {
+    width: 120px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
   }
   
   .submit-button {
@@ -91,10 +115,16 @@
     }
   
     input[type="number"],
-    input[type="date"] {
+    input[type="date"],
+    select,
+    button {
       background: #333;
       color: #fff;
       border-color: #444;
+    }
+  
+    .factors-section h3 {
+      color: #fff;
     }
   }
 
@@ -153,7 +183,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 1.5rem;
-  padding-bottom: 4rem;
+  padding-top: 4rem;
   overflow-x: auto;
   text-align: left;
   margin: 0;
@@ -192,7 +222,7 @@
 /* Update copy button styles */
 .copy-button {
   position: absolute;
-  bottom: 1rem;
+  top: 1rem;
   right: 1rem;
   padding: 0.5rem 1rem;
   background-color: #6c757d;
@@ -323,6 +353,8 @@ button {
   margin-bottom: 0.5rem;
   max-width: 400px;
   height: 32px;
+  position: relative;
+  z-index: 2;
 }
 
 .comparator-select {
@@ -333,6 +365,8 @@ button {
   background-color: white;
   height: 100%;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
 .value-input {
@@ -342,6 +376,8 @@ button {
   border-radius: 4px;
   height: 100%;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
 /* Update add condition button styles */
@@ -358,6 +394,8 @@ button {
   transition: background-color 0.2s;
   width: auto;
   display: inline-block;
+  position: relative;
+  z-index: 2;
 }
 
 /* Update remove condition button styles */
@@ -377,6 +415,8 @@ button {
   justify-content: center;
   box-sizing: border-box;
   margin: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .remove-condition:hover {
@@ -396,4 +436,36 @@ button {
     color: white;
     border-color: #444;
   }
+}
+
+/* Add these styles to ensure elements are interactive */
+.backtest-container {
+  position: relative;
+  z-index: 1;
+}
+
+.condition-row,
+.input-group,
+.factor-group,
+button,
+input,
+select {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto !important;
+}
+
+/* Update form controls to ensure they're clickable */
+input[type="number"],
+input[type="date"],
+select,
+button {
+  cursor: pointer;
+  user-select: auto;
+}
+
+/* Ensure the container doesn't block interactions */
+.config-section {
+  position: relative;
+  z-index: 1;
 }
