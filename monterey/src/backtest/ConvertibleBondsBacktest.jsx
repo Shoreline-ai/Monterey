@@ -88,23 +88,40 @@ export default function ConvertibleBondsBacktest() {
   const [error, setError] = useState(null);
   const [backtestResults, setBacktestResults] = useState(null);
 
+  // Add state for loading
+  const [isLoading, setIsLoading] = useState(true);
+
   // Add navigate
   const navigate = useNavigate();
   
-  // Add logout handler
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    navigate('/login');
-  };
-
-  // Add this near the top of your component
+  // Update the useEffect to handle loading state
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    }
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+        
+        // Verify token with backend if needed
+        // const response = await api.get('/api/verify-token');
+        
+        setIsLoading(false); // Set loading to false after auth check
+      } catch (error) {
+        console.error('Auth check error:', error);
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    };
+
+    checkAuth();
   }, [navigate]);
+
+  // Add early return for loading state
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   // Reset handler - make sure to set jsonOutput to null
   const handleReset = () => {
@@ -123,11 +140,10 @@ export default function ConvertibleBondsBacktest() {
     return dateStr.replace(/-/g, '');
   };
 
-  // Generate config handler
+  // Update handleGenerateConfig to include error handling
   const handleGenerateConfig = async () => {
-    setError(null);
-
     try {
+      setError(null);
       const configData = {
         data: {
           ...data,
@@ -144,15 +160,16 @@ export default function ConvertibleBondsBacktest() {
         setJsonOutput(configData);
         setBacktestResults(response.data.performance);
       } else {
-        throw new Error(response.data.message);
+        throw new Error(response.data.message || 'Failed to generate config');
       }
-    } catch (err) {
-      console.error('Error generating config:', err);
-      setError(err.message || 'Error generating configuration');
-      
-      if (err.response?.status === 401) {
+    } catch (error) {
+      console.error('Error generating config:', error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
         navigate('/login');
+        return;
       }
+      setError(error.message || 'Error generating configuration');
     }
   };
 
@@ -265,8 +282,16 @@ export default function ConvertibleBondsBacktest() {
     return conditions;
   };
 
+  // Update handleLogout to properly clean up
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    navigate('/login');
+  };
+
   return (
     <div className="backtest-container">
+      {error && <div className="error-message">{error}</div>}
       <div className="header">
         <h1>Convertible Bond Backtesting</h1>
         <div className="user-controls">
