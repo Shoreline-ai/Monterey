@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ConvertibleBondsBacktest.css';
+import api from '../utils/axios';
 
 export default function ConvertibleBondsBacktest() {
   const COMPARATORS = ['<', '>', '==', '<=', '>='];
@@ -83,6 +85,26 @@ export default function ConvertibleBondsBacktest() {
   const [data, setData] = useState(initialState.data);
   const [strategy, setStrategy] = useState(initialState.strategy);
   const [jsonOutput, setJsonOutput] = useState(null);
+  const [error, setError] = useState(null);
+  const [backtestResults, setBacktestResults] = useState(null);
+
+  // Add navigate
+  const navigate = useNavigate();
+  
+  // Add logout handler
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    navigate('/login');
+  };
+
+  // Add this near the top of your component
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   // Reset handler - make sure to set jsonOutput to null
   const handleReset = () => {
@@ -102,42 +124,36 @@ export default function ConvertibleBondsBacktest() {
   };
 
   // Generate config handler
-  const handleGenerateConfig = () => {
-    const configData = {
-      data: {
-        ...data,
-        start_date: data.start_date ? getStorageFormat(data.start_date) : '',
-        end_date: data.end_date ? getStorageFormat(data.end_date) : ''
-      },
-      strategies: [strategy],
-      output_path: 'result/backtest_output.xlsx'
-    };
-    setJsonOutput(configData);
-    console.log('Generated config:', configData);
-    // if (false) {
-    //     try {
-    //         const response = await fetch('https://your-api-endpoint.com/backtest', {
-    //           method: 'POST',
-    //           headers: {
-    //             'Content-Type': 'application/json',
-    //           },
-    //           body: JSON.stringify(configData)
-    //         });
-        
-    //         if (!response.ok) {
-    //           throw new Error(`HTTP error! status: ${response.status}`);
-    //         }
-        
-    //         const result = await response.json();
-    //         console.log('Server response:', result);
-    //         alert('Backtest configuration submitted successfully!');
-    //       } catch (err) {
-    //         console.error('Error submitting backtest:', err);
-    //         setError(err.message);
-    //       } finally {
-    //         setIsLoading(false);
-    //       }
-    // }
+  const handleGenerateConfig = async () => {
+    setError(null);
+
+    try {
+      const configData = {
+        data: {
+          ...data,
+          start_date: data.start_date ? getStorageFormat(data.start_date) : '',
+          end_date: data.end_date ? getStorageFormat(data.end_date) : ''
+        },
+        strategies: [strategy],
+        output_path: 'result/backtest_output.xlsx'
+      };
+
+      const response = await api.post('/api/backtest', configData);
+      
+      if (response.data.status === 'success') {
+        setJsonOutput(configData);
+        setBacktestResults(response.data.performance);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (err) {
+      console.error('Error generating config:', err);
+      setError(err.message || 'Error generating configuration');
+      
+      if (err.response?.status === 401) {
+        navigate('/login');
+      }
+    }
   };
 
   // Handler for date changes
@@ -251,7 +267,15 @@ export default function ConvertibleBondsBacktest() {
 
   return (
     <div className="backtest-container">
-      <h1>Convertible Bond Backtesting</h1>
+      <div className="header">
+        <h1>Convertible Bond Backtesting</h1>
+        <div className="user-controls">
+          <span>Welcome, {localStorage.getItem('username')}</span>
+          <button onClick={handleLogout} className="logout-button">
+            Logout
+          </button>
+        </div>
+      </div>
       
       <form onSubmit={(e) => {
         e.preventDefault();
