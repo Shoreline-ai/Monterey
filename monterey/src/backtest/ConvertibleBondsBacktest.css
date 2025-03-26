@@ -153,9 +153,10 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 1.5rem;
+  padding-bottom: 4rem;
   overflow-x: auto;
   text-align: left;
-  margin: 0;  /* Remove any default margins */
+  margin: 0;
 }
 
 .json-display pre {
@@ -167,8 +168,8 @@
   color: #333;
   text-align: left;
   padding: 0;
-  display: block;  /* Ensure block display */
-  width: 100%;    /* Take full width */
+  display: block;
+  width: 100%;
 }
 
 /* Remove any center alignment from container */
@@ -179,8 +180,8 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: left;
-  display: block;  /* Ensure block display */
-  width: 100%;    /* Take full width */
+  display: block;
+  width: 100%;
 }
 
 /* Force left alignment for all text content */
@@ -188,9 +189,211 @@
   text-align: left !important;
 }
 
-/* Position the copy button without affecting alignment */
+/* Update copy button styles */
 .copy-button {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  text-align: center;
+}
+
+.copy-button:hover {
+  background-color: #5a6268;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-controls span {
+  color: #666;
+}
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .user-controls span {
+    color: #ccc;
+  }
+}
+
+/* Make sure form controls are clickable */
+.form-group input,
+.form-group select,
+button {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Ensure the container is scrollable if needed */
+.backtest-container {
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+/* Add z-index to ensure controls are clickable */
+.config-section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure buttons are clickable */
+.buttons-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.generate-button {
+  flex: 2;
+  padding: 1rem;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generate-button:hover {
+  background-color: #1557b0;
+}
+
+.reset-button {
+  flex: 1;
+  padding: 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+  background-color: #c82333;
+}
+
+/* Update condition row styles */
+.condition-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  max-width: 400px;
+  height: 32px;
+}
+
+.comparator-select {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.value-input {
+  width: 120px;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Update add condition button styles */
+.add-condition {
+  margin-top: 1rem;
+  margin-left: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: auto;
+  display: inline-block;
+}
+
+/* Update remove condition button styles */
+.remove-condition {
+  padding: 0;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 32px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.remove-condition:hover {
+  background-color: #c82333;
+}
+
+/* Dark mode support for new elements */
+@media (prefers-color-scheme: dark) {
+  .comparator-select {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+  }
+
+  .value-input {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+  }
 }
