@@ -1,0 +1,38 @@
+# Core dependencies
+pandas==2.1.1
+numpy==1.24.0
+pyarrow==14.0.1
+python-dateutil==2.8.2
+tqdm==4.65.0
+pyyaml==6.0.1
+
+# API Service dependencies
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.4.2
+python-multipart==0.0.6
+
+# Development and debugging
+ipykernel==6.29.5  # Jupyter支持
+ipython==8.18.1
+jupyter_client==8.6.3
+jupyter_core==5.7.2
+matplotlib-inline==0.1.7
+debugpy==1.8.13  # 调试工具
+jedi==0.19.2
+prompt_toolkit==3.0.50
+psutil==7.0.0
+
+# Code quality and testing
+pytest==7.0.0
+black==22.0.0
+flake8==4.0.0
+isort==5.0.0
+mypy==1.0.0  # 类型检查
+
+# Documentation
+Sphinx==4.0.0
+sphinx-rtd-theme==1.0.0
+
+# Install the project in editable mode
+-e . 
