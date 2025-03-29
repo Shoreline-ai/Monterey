@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cb_backtest"
+version = "0.1.0"
+description = "可转债回测框架"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" },
+]
+
+dependencies = [
+    "pandas>=2.1.1",
+    "numpy>=1.24.0",
+    "pyarrow>=14.0.1",
+    "python-dateutil>=2.8.2",
+    "tqdm>=4.65.0",
+    "pyyaml>=6.0.1",
+    "fastapi==0.104.1",
+    "uvicorn==0.24.0",
+    "pydantic==2.4.2",
+    "python-multipart==0.0.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipykernel==6.29.5",
+    "ipython==8.18.1",
+    "jupyter_client==8.6.3",
+    "jupyter_core==5.7.2",
+    "matplotlib-inline==0.1.7",
+    "debugpy==1.8.13",
+    "jedi==0.19.2",
+    "prompt_toolkit==3.0.50",
+    "psutil==7.0.0",
+]
+
+test = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "isort>=5.0.0",
+]
+
+docs = [
+    "Sphinx>=4.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/cb_backtest"
+Repository = "https://github.com/yourusername/cb_backtest.git"
+
+[tool.hatch.build.targets.wheel]
+packages = ["cb_backtest"] 

@@ -8,129 +8,269 @@
 <a name="english"></a>
 ## English Version
 
-This is a framework for backtesting convertible bonds.
+A high-performance framework for backtesting convertible bond trading strategies, featuring:
+- Factor-based strategy development
+- Single and batch backtesting
+- Performance evaluation
+- RESTful API service
 
 ### Installation Guide
 
 #### Prerequisites
 
-1. Install Docker
-   - Download and install Docker from [Docker's official website](https://www.docker.com/products/docker-desktop)
-   - Verify installation with `docker --version`
+1. Python Environment
+   - Ensure Python >= 3.8 is installed
+   - Create and activate a virtual environment (recommended):
+     ```bash
+     python -m venv .venv
+     source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+     ```
 
-2. Set up MongoDB
+2. Installation Options
+
+   a. For Users (Install Dependencies Only)
    ```bash
-   # Create and run a MongoDB container
-   docker run --name some-mongo -d -p 27017:27017 mongo:latest
+   cd cb_backtest
+   pip install -r requirements.txt
+   ```
+   This will install all required third-party packages for running the service.
+
+   b. For Developers (Install with Development Tools)
+   ```bash
+   cd cb_backtest
+   pip install -r requirements-dev.txt
+   ```
+   This will:
+   - Install the project in editable mode
+   - Install all development tools (Jupyter, testing, formatting)
+   - Enable instant code changes without reinstallation
+
+### Dependency Management
+
+The project uses a three-tier dependency management system:
+
+1. `pyproject.toml`:
+   - Defines project metadata and dependencies
+   - Uses `>=` for core dependencies (minimum version requirements)
+   - Uses `==` for API and development tools (fixed versions)
+   - Supports optional dependency groups (dev/test/docs)
+
+2. `requirements.txt`:
+   - Lists all runtime dependencies with fixed versions
+   - Ensures production environment consistency
+   - Used for deployment and production
+
+3. `requirements-dev.txt`:
+   - Includes all development tools
+   - References the project itself in editable mode
+   - Used for development environment setup
+
+### Running the Service
+
+1. Start the FastAPI Service
+   ```bash
+   python -m uvicorn cb_backtest.api.app:app --host 127.0.0.1 --port 8000
    ```
 
-3. Install Python Dependencies
-   ```bash
-   # Install Flask and MongoDB dependencies
-   pip install flask flask-cors pymongo python-dotenv
-   ```
+2. Access the API Documentation
+   - Open http://127.0.0.1:8000/docs in your browser
+   - You can test the API directly through the Swagger UI
 
-#### Basic Installation (Runtime Only)
+### API Usage Example
 
-```bash
-pip install -e .
+```python
+import requests
+import json
+
+url = "http://127.0.0.1:8000/backtest/run"
+data = {
+    "data": {
+        "start_date": "2023-01-01",
+        "end_date": "2023-12-31"
+    },
+    "strategy": {
+        "exclude_conditions": ["低于面值", "已到期"],
+        "score_factors": ["到期收益率", "剩余期限"],
+        "weights": [0.7, 0.3],
+        "hold_num": 20,
+        "stop_profit": 0.2,
+        "fee_rate": 0.003
+    }
+}
+
+response = requests.post(url, json=data)
+results = response.json()
 ```
 
-#### Development Environment Installation (Includes All Dev Tools)
+### Project Structure
 
-```bash
-pip install -r requirements-dev.txt
+```
+cb_backtest/
+├── api/                # FastAPI service
+│   ├── app.py         # API endpoints
+│   ├── models.py      # Request/Response models
+│   └── config.yaml    # Service configuration
+├── core/              # Core backtest logic
+│   ├── backtester.py  # Main backtester implementation
+│   ├── engine.py      # Factor engine
+│   ├── eval.py        # Performance evaluation
+│   ├── single_runner.py # Single backtest runner
+│   └── batch_runner.py # Batch backtest runner
+└── utils/             # Utility functions
 ```
 
-### Dependencies
+### Development Tools
 
-- Core Dependencies (defined in setup.py):
-  - pandas >= 2.2.3
-  - numpy >= 2.0.2
-  - TA-Lib >= 0.4.0
-  - quantstats >= 0.0.62
-  - openpyxl >= 3.0.10
-  - pyarrow >= 8.0.0
-  - flask
-  - flask-cors
-  - pymongo
-  - python-dotenv
+The project includes several development tools:
 
-- Development Dependencies (defined in requirements-dev.txt):
-  - Jupyter environment support
-  - Development tools (debugpy, black, flake8, etc.)
-  - Testing tools (pytest)
-  - Documentation tools (Sphinx)
+1. Code Quality:
+   - `black`: Code formatting
+   - `flake8`: Style guide enforcement
+   - `isort`: Import sorting
 
-### Important Notes
+2. Testing:
+   - `pytest`: Unit testing
 
-1. Ensure your Python version is >= 3.8
-2. If you only need the core functionality of the framework, use the basic installation
-3. If you need to develop or contribute code, please use the development environment installation
-4. Make sure MongoDB is running before starting the application
+3. Documentation:
+   - `Sphinx`: Documentation generation
+   - `sphinx-rtd-theme`: ReadTheDocs theme
+
+4. Jupyter Support:
+   - Full Jupyter notebook support for strategy development
+   - Interactive debugging capabilities
 
 ---
 
 <a name="chinese"></a>
 ## 中文版本
 
-这是一个用于可转债回测的框架。
+这是一个高性能的可转债回测框架，特点包括：
+- 因子策略开发
+- 单次和批量回测
+- 性能评估
+- RESTful API 服务
 
 ### 安装说明
 
 #### 前置要求
 
-1. 安装 Docker
-   - 从 [Docker 官网](https://www.docker.com/products/docker-desktop) 下载并安装 Docker
-   - 使用 `docker --version` 验证安装
+1. Python 环境
+   - 确保安装了 Python >= 3.8
+   - 创建并激活虚拟环境（推荐）：
+     ```bash
+     python -m venv .venv
+     source .venv/bin/activate  # Windows 系统：.venv\Scripts\activate
+     ```
 
-2. 设置 MongoDB
+2. 安装选项
+
+   a. 普通用户（仅安装运行依赖）
    ```bash
-   # 创建并运行 MongoDB 容器
-   docker run --name some-mongo -d -p 27017:27017 mongo:latest
+   cd cb_backtest
+   pip install -r requirements.txt
+   ```
+   这将安装运行服务所需的所有第三方包。
+
+   b. 开发者（安装开发工具）
+   ```bash
+   cd cb_backtest
+   pip install -r requirements-dev.txt
+   ```
+   这将：
+   - 以可编辑模式安装项目
+   - 安装所有开发工具（Jupyter、测试、代码格式化）
+   - 支持即时代码修改，无需重新安装
+
+### 依赖管理
+
+项目使用三层依赖管理系统：
+
+1. `pyproject.toml`：
+   - 定义项目元数据和依赖
+   - 核心依赖使用 `>=` 指定最低版本要求
+   - API 和开发工具使用 `==` 固定版本
+   - 支持可选依赖分组（dev/test/docs）
+
+2. `requirements.txt`：
+   - 列出所有运行时依赖的固定版本
+   - 确保生产环境的一致性
+   - 用于部署和生产环境
+
+3. `requirements-dev.txt`：
+   - 包含所有开发工具
+   - 以可编辑模式引用项目本身
+   - 用于开发环境搭建
+
+### 运行服务
+
+1. 启动 FastAPI 服务
+   ```bash
+   python -m uvicorn cb_backtest.api.app:app --host 127.0.0.1 --port 8000
    ```
 
-3. 安装 Python 依赖
-   ```bash
-   # 安装 Flask 和 MongoDB 依赖
-   pip install flask flask-cors pymongo python-dotenv
-   ```
+2. 访问 API 文档
+   - 在浏览器中打开 http://127.0.0.1:8000/docs
+   - 可以直接通过 Swagger UI 测试 API
 
-#### 基础安装（仅运行功能）
+### API 使用示例
 
-```bash
-pip install -e .
+```python
+import requests
+import json
+
+url = "http://127.0.0.1:8000/backtest/run"
+data = {
+    "data": {
+        "start_date": "2023-01-01",
+        "end_date": "2023-12-31"
+    },
+    "strategy": {
+        "exclude_conditions": ["低于面值", "已到期"],
+        "score_factors": ["到期收益率", "剩余期限"],
+        "weights": [0.7, 0.3],
+        "hold_num": 20,
+        "stop_profit": 0.2,
+        "fee_rate": 0.003
+    }
+}
+
+response = requests.post(url, json=data)
+results = response.json()
 ```
 
-#### 开发环境安装（包含所有开发工具）
+### 项目结构
 
-```bash
-pip install -r requirements-dev.txt
+```
+cb_backtest/
+├── api/                # FastAPI 服务
+│   ├── app.py         # API 端点
+│   ├── models.py      # 请求/响应模型
+│   └── config.yaml    # 服务配置
+├── core/              # 核心回测逻辑
+│   ├── backtester.py  # 主要回测器实现
+│   ├── engine.py      # 因子引擎
+│   ├── eval.py        # 性能评估
+│   ├── single_runner.py # 单次回测运行器
+│   └── batch_runner.py # 批量回测运行器
+└── utils/             # 工具函数
 ```
 
-### 依赖说明
+### 开发工具
 
-- 核心依赖（在 setup.py 中定义）：
-  - pandas >= 2.2.3
-  - numpy >= 2.0.2
-  - TA-Lib >= 0.4.0
-  - quantstats >= 0.0.62
-  - openpyxl >= 3.0.10
-  - pyarrow >= 8.0.0
-  - flask
-  - flask-cors
-  - pymongo
-  - python-dotenv
+项目包含多个开发工具：
 
-- 开发依赖（在 requirements-dev.txt 中定义）：
-  - Jupyter 环境支持
-  - 开发工具（debugpy, black, flake8 等）
-  - 测试工具（pytest）
-  - 文档工具（Sphinx）
+1. 代码质量：
+   - `black`：代码格式化
+   - `flake8`：代码风格检查
+   - `isort`：导入语句排序
 
-### 注意事项
+2. 测试：
+   - `pytest`：单元测试
 
-1. 确保您的 Python 版本 >= 3.8
-2. 如果您只需要使用框架的核心功能，使用基础安装即可
-3. 如果您需要进行开发或贡献代码，请使用开发环境安装
-4. 在启动应用程序之前，请确保 MongoDB 正在运行
+3. 文档：
+   - `Sphinx`：文档生成
+   - `sphinx-rtd-theme`：ReadTheDocs 主题
+
+4. Jupyter 支持：
+   - 完整的 Jupyter notebook 支持，用于策略开发
+   - 交互式调试功能
