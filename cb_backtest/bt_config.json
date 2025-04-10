@@ -1,0 +1,12 @@
+{
+    "project_name": "cb_backtest",
+    "project_path": "/www/wwwroot/cb_backtest",
+    "project_type": "python",
+    "python_version": "3.9",
+    "python_path": ".venv/bin/python",
+    "start_file": "start.sh",
+    "start_cmd": "./start.sh",
+    "stop_cmd": "kill -9 $(cat logs/gunicorn.pid)",
+    "is_daemon": true,
+    "auto_start": true
+} 

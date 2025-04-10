@@ -10,48 +10,48 @@ from datetime import datetime
 class BacktestData(BaseModel):
     start_date: str = Field(
         ..., 
-        description="回测开始日期，格式：YYYY-MM-DD",
-        example="2023-01-01"
+        description="回测开始日期，格式：YYYYMMDD",
+        example="20240801"
     )
     end_date: str = Field(
         ..., 
-        description="回测结束日期，格式：YYYY-MM-DD",
-        example="2023-12-31"
+        description="回测结束日期，格式：YYYYMMDD",
+        example="20251231"
     )
 
 class Strategy(BaseModel):
     exclude_conditions: List[str] = Field(
         ..., 
         description="排除条件列表",
-        example=["低于面值", "已到期"]
+        example=["close < 102", "close > 155", "left_years < 0.7"]
     )
     score_factors: List[str] = Field(
         ..., 
         description="评分因子列表",
-        example=["到期收益率", "剩余期限"]
+        example=["bond_prem", "ytm", "turnover_5"]
     )
     weights: List[float] = Field(
         ..., 
         description="因子权重列表",
-        example=[0.7, 0.3]
+        example=[-10, 10, 5]
     )
     hold_num: int = Field(
         ..., 
         description="持仓数量，必须大于0", 
         gt=0,
-        example=20
+        example=5
     )
     stop_profit: float = Field(
         ..., 
         description="止盈比例，必须大于等于0", 
         ge=0,
-        example=0.2
+        example=0.03
     )
     fee_rate: float = Field(
         ..., 
         description="交易费率，必须大于等于0", 
         ge=0,
-        example=0.003
+        example=0.002
     )
 
 class StrategyConfig(Strategy):
@@ -69,12 +69,12 @@ class BacktestResult(BaseModel):
     """回测结果详情"""
     annual_return: float = Field(..., description="年化收益率")
     max_drawdown: float = Field(..., description="最大回撤")
-    sharpe_ratio: float = Field(..., description="夏普比率")
+    sharpe: float = Field(..., description="夏普比率")
     sortino_ratio: float = Field(..., description="索提诺比率")
     win_rate: float = Field(..., description="胜率")
     trade_count: int = Field(..., description="交易次数")
     avg_hold_days: float = Field(..., description="平均持仓天数")
-    daily_returns: List[float] = Field(..., description="每日收益率序列")
+    daily_returns: Dict[str, float] = Field(..., description="每日收益率序列，格式：{日期: 收益率}")
     positions: Dict[str, List[str]] = Field(..., description="每日持仓")
     trades: List[Dict] = Field(..., description="交易记录")
 
