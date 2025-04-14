@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Login from './components/Auth/Login';
-import Register from './components/Auth/Register';
-import ConvertibleBondsBacktest from './backtest/ConvertibleBondsBacktest';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ConvertibleBondsBacktest from './pages/ConvertibleBondsBacktest';
 import './App.css';
 
 function PrivateRoute({ children }) {
