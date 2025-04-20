@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaLock } from 'react-icons/fa';
 import AuthCard from '../components/AuthCard';
 import api from '../utils/axios';
+import { config } from '../config';
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -32,18 +33,13 @@ export default function Login() {
   };
 
   return (
-
-
-
     <AuthCard
       title={
         <div className="flex flex-col items-center mb-6">
-          {/* 🧠 Big brand title inside the card */}
           <h1 className="text-2xl sm:text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-400 drop-shadow-sm mb-3">
-            Convertible Bond Backtest
+            {config.appName}
           </h1>
           
-          {/* Smaller login section title */}
           <h2 className="text-2xl font-bold text-blue-300">Welcome Back</h2>
         </div>
       }
