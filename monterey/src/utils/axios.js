@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { config } from '../config';
 
 const api = axios.create({
-  baseURL: 'http://os.convertedbond.cn',
+  baseURL: config.apiUrl,
   headers: {
     'Content-Type': 'application/json',
   },

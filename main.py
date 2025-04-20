@@ -9,18 +9,42 @@ from datetime import datetime, timedelta
 import os
 import httpx
 import logging
+import yaml
+
+# Read config.yml
+def load_config():
+    with open('config.yml', 'r') as file:
+        return yaml.safe_load(file)
+
+config = load_config()
+env = config.get('env', 'local')
+
+# Environment-specific configurations
+ENV_CONFIG = {
+    'local': {
+        'cors_origins': ["http://localhost:5173"],
+        'backtest_api_url': "http://127.0.0.1:8000/backtest",
+        'log_file': "app.log",
+        'mongo_url': "mongodb://localhost:27017"
+    },
+    'production': {
+        'cors_origins': ["http://api.convertedbond.cn"],
+        'backtest_api_url': "https://convertedbond.cn/backtest",
+        'log_file': "/www/wwwlogs/os.convertedbond.cn.error.log",
+        'mongo_url': "mongodb://localhost:27017"
+    }
+}
+
+# Get current environment config
+current_config = ENV_CONFIG[env]
 
 # Setup logging
-# 日志路径
-LOG_FILE = "/www/wwwlogs/os.convertedbond.cn.error.log"
-
-# 配置日志
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler(LOG_FILE),         # ✅ 写入宝塔日志文件
-        logging.StreamHandler()                # ✅ 同时输出到控制台
+        logging.FileHandler(current_config['log_file']),
+        logging.StreamHandler()
     ]
 )
 logger = logging.getLogger('server')
@@ -51,7 +75,7 @@ security = HTTPBearer()
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://api.convertedbond.cn"],
+    allow_origins=current_config['cors_origins'],
     # allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
@@ -59,8 +83,7 @@ app.add_middleware(
 )
 
 # MongoDB configuration
-MONGO_URL = "mongodb://localhost:27017"
-db_client = AsyncIOMotorClient(MONGO_URL)
+db_client = AsyncIOMotorClient(current_config['mongo_url'])
 db = db_client.monterey
 
 # Configure data paths
@@ -169,15 +192,14 @@ async def run_backtest(config: BacktestConfig, current_user: dict = Depends(get_
             
             logger.info(f"Sending payload: {payload}")
             response = await client.post(
-                "https://convertedbond.cn/backtest",
-                # "http://127.0.0.1:8000/backtest",
+                current_config['backtest_api_url'],
                 json=payload,
                 timeout=30.0
             )
 
             # Check if the request was successful
             response.raise_for_status()
-            result = response.json()
+            result = x.json()
 
             # Create a properly structured response
             formatted_result = {

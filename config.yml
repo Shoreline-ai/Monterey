@@ -1,0 +1,13 @@
+# Environment (local or production)
+env: local
+
+# JWT configuration
+jwt_secret: "your-secret-key"
+jwt_algorithm: "HS256"
+
+# Data paths
+cb_data_path: "/Users/jinliangguo/dev/data/cb_data.pq"
+index_data_path: "/Users/jinliangguo/dev/data/index.pq"
+
+# API timeouts
+backtest_timeout: 30.0

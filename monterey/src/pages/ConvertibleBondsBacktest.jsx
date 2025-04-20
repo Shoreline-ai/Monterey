@@ -10,6 +10,7 @@ import ScoreFactors from '../components/ScoreFactors.jsx';
 import LoadingButton from '../components/LoadingButton.jsx';
 import JsonDisplay from '../components/JsonDisplay.jsx';
 import api from '../utils/axios';
+import { config } from '../config';
 
 export default function ConvertibleBondsBacktest() {
   const COMPARATORS = ['<', '>', '==', '<=', '>='];
@@ -146,7 +147,7 @@ export default function ConvertibleBondsBacktest() {
   return (
     <div className="min-h-screen px-4 py-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       <div className="max-w-5xl mx-auto">
-        <PageHeader />
+        <PageHeader title={config.appName} />
 
         {error && (
           <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded text-sm mb-4">

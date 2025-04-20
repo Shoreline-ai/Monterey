@@ -7,13 +7,17 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:dev": "vite --mode development",
+    "start:prod": "vite --mode production",
+    "build:prod": "vite build --mode production"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.3",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "daisyui": "^5.0.27",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
