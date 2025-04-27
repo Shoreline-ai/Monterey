@@ -180,3 +180,26 @@ cython_debug/
 # Project specific
 cb_backtest/result/
 cb_backtest/result/*
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Editable install metadata
+*.egg-info/
+build/
+dist/
+
+# Virtual environment
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# pytest cache
+.pytest_cache/
+
+# Others
+logs/
+data/

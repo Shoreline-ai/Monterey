@@ -1,12 +1,7 @@
 """
-可转债回测框架
-~~~~~~~~~~~~~
+CB Backtest Package
 
-这个包提供了可转债回测的核心功能：
-- 单次和批量回测
-- 因子策略开发
-- 性能评估
-- RESTful API 服务
+用于可转债回测的Python包。
 """
 
 # Core components
@@ -20,7 +15,7 @@ from .core.batch_runner import BatchRunner
 from .api.models import BacktestRequest, BacktestData, Strategy
 from .api.app import app
 
-__version__ = "0.1.0"
+__version__ = '0.1.0'
 
 __all__ = [
     # Core components

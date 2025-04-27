@@ -1,3 +1,5 @@
 data:
   cb_data_path: "/Users/yiwei/Desktop/git/cb_data.pq"
   index_data_path: "/Users/yiwei/Desktop/git/index.pq" 
+  # cb_data_path: "/www/wwwroot/cb_backtest/data/cb_data.pq"
+  # index_data_path: "/www/wwwroot/cb_backtest/data/index.pq" 
