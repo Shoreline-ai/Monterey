@@ -11,6 +11,7 @@ import LoadingButton from '../components/LoadingButton.jsx';
 import JsonDisplay from '../components/JsonDisplay.jsx';
 import api from '../utils/axios';
 import { config } from '../config';
+import Footer from '../components/Footer';
 
 export default function ConvertibleBondsBacktest() {
   const COMPARATORS = ['<', '>', '==', '<=', '>='];
@@ -145,114 +146,121 @@ export default function ConvertibleBondsBacktest() {
   if (loading) return <div className="text-center mt-10 text-white">Loading...</div>;
 
   return (
-    <div className="min-h-screen px-4 py-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      <div className="max-w-5xl mx-auto">
-        <PageHeader title={config.appName} />
+    <div className="w-screen min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      <div className="flex-grow px-5 py-8">
+        <div className="max-w-5xl mx-auto">
+          <PageHeader title={config.appName} />
 
-        {error && (
-          <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded text-sm mb-4">
-            {error}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded text-sm mb-4">
+              {error}
+            </div>
+          )}
+
+          {/* Section: Dates */}
+          <ConfigCard>
+            <SectionHeader title="Data Configuration" />
+            <InputGroup label="Start Date">
+              <input
+                type="date"
+                value={data.start_date}
+                onChange={(e) => setData({ ...data, start_date: e.target.value })}
+                className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
+              />
+            </InputGroup>
+            <InputGroup label="End Date">
+              <input
+                type="date"
+                value={data.end_date}
+                onChange={(e) => setData({ ...data, end_date: e.target.value })}
+                className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
+              />
+            </InputGroup>
+          </ConfigCard>
+
+          {/* Section: Exclude Conditions */}
+          <ConfigCard>
+            <SectionHeader title="Exclude Conditions" />
+            {['price', 'duration', 'volume'].map((key) => (
+              <ConditionEditor
+                key={key}
+                title={key[0].toUpperCase() + key.slice(1) + ' Conditions'}
+                enabled={strategy.exclude_conditions[key].enabled}
+                onToggle={(e) => handleExcludeToggle(key, e.target.checked)}
+                conditions={strategy.exclude_conditions[key].conditions}
+                onChange={(index, field, value) => handleConditionChange(key, index, field, value)}
+                onAdd={() => handleAddCondition(key)}
+                onRemove={(index) => handleRemoveCondition(key, index)}
+                COMPARATORS={COMPARATORS}
+              />
+            ))}
+          </ConfigCard>
+
+          {/* Section: Strategy */}
+          <ConfigCard>
+            <SectionHeader title="Strategy Configuration" />
+            <InputGroup label="Hold Number">
+              <input
+                type="number"
+                value={strategy.hold_num}
+                onChange={(e) => handleStrategyValue('hold_num', Number(e.target.value))}
+                className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
+              />
+            </InputGroup>
+            <InputGroup label="Stop Profit (%)">
+              <input
+                type="number"
+                step="0.01"
+                value={strategy.stop_profit * 100}
+                onChange={(e) => handleStrategyValue('stop_profit', parseFloat(e.target.value) / 100)}
+                className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
+              />
+            </InputGroup>
+            <InputGroup label="Fee Rate (%)">
+              <input
+                type="number"
+                step="0.001"
+                value={strategy.fee_rate * 100}
+                onChange={(e) => handleStrategyValue('fee_rate', parseFloat(e.target.value) / 100)}
+                className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
+              />
+            </InputGroup>
+
+            <div className="mt-6">
+              <SectionHeader title="Score Factors" />
+              <ScoreFactors
+                scoreFactors={strategy.score_factors}
+                weights={strategy.weights}
+                onWeightChange={handleWeightChange}
+              />
+            </div>
+          </ConfigCard>
+
+          <div className="flex gap-4 mt-8">
+            <div className="flex-1">
+              <LoadingButton isLoading={isGenerating} onClick={handleGenerate}>
+                Generate Backtest
+              </LoadingButton>
+            </div>
+            <button
+              onClick={() => {
+                setStrategy(initialState.strategy);
+                setData(initialState.data);
+                setJsonOutput(initialState.strategy);
+              }}
+              className="flex-1 bg-red-600 hover:bg-red-500 transition py-3 rounded-md font-semibold shadow-md"
+            >
+              Reset
+            </button>
           </div>
-        )}
 
-        {/* Section: Dates */}
-        <ConfigCard>
-          <SectionHeader title="Data Configuration" />
-          <InputGroup label="Start Date">
-            <input
-              type="date"
-              value={data.start_date}
-              onChange={(e) => setData({ ...data, start_date: e.target.value })}
-              className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
-            />
-          </InputGroup>
-          <InputGroup label="End Date">
-            <input
-              type="date"
-              value={data.end_date}
-              onChange={(e) => setData({ ...data, end_date: e.target.value })}
-              className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
-            />
-          </InputGroup>
-        </ConfigCard>
-
-        {/* Section: Exclude Conditions */}
-        <ConfigCard>
-          <SectionHeader title="Exclude Conditions" />
-          {['price', 'duration', 'volume'].map((key) => (
-            <ConditionEditor
-              key={key}
-              title={key[0].toUpperCase() + key.slice(1) + ' Conditions'}
-              enabled={strategy.exclude_conditions[key].enabled}
-              onToggle={(e) => handleExcludeToggle(key, e.target.checked)}
-              conditions={strategy.exclude_conditions[key].conditions}
-              onChange={(index, field, value) => handleConditionChange(key, index, field, value)}
-              onAdd={() => handleAddCondition(key)}
-              onRemove={(index) => handleRemoveCondition(key, index)}
-              COMPARATORS={COMPARATORS}
-            />
-          ))}
-        </ConfigCard>
-
-        {/* Section: Strategy */}
-        <ConfigCard>
-          <SectionHeader title="Strategy Configuration" />
-          <InputGroup label="Hold Number">
-            <input
-              type="number"
-              value={strategy.hold_num}
-              onChange={(e) => handleStrategyValue('hold_num', Number(e.target.value))}
-              className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
-            />
-          </InputGroup>
-          <InputGroup label="Stop Profit (%)">
-            <input
-              type="number"
-              step="0.01"
-              value={strategy.stop_profit * 100}
-              onChange={(e) => handleStrategyValue('stop_profit', parseFloat(e.target.value) / 100)}
-              className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
-            />
-          </InputGroup>
-          <InputGroup label="Fee Rate (%)">
-            <input
-              type="number"
-              step="0.001"
-              value={strategy.fee_rate * 100}
-              onChange={(e) => handleStrategyValue('fee_rate', parseFloat(e.target.value) / 100)}
-              className="px-4 py-2 rounded-md bg-gray-800 border border-gray-600 text-white"
-            />
-          </InputGroup>
-
-          <div className="mt-6">
-            <SectionHeader title="Score Factors" />
-            <ScoreFactors
-              scoreFactors={strategy.score_factors}
-              weights={strategy.weights}
-              onWeightChange={handleWeightChange}
-            />
-          </div>
-        </ConfigCard>
-
-        <div className="flex gap-4 mt-8">
-          <div className="flex-1">
-            <LoadingButton isLoading={isGenerating} onClick={handleGenerate}>
-              Generate Backtest
-            </LoadingButton>
-          </div>
-          <button
-            onClick={() => {
-              setStrategy(initialState.strategy);
-              setData(initialState.data);
-              setJsonOutput(initialState.strategy);
-            }}
-            className="flex-1 bg-red-600 hover:bg-red-500 transition py-3 rounded-md font-semibold shadow-md"
-          >
-            Reset
-          </button>
+          {jsonOutput && <JsonDisplay json={jsonOutput} />}
         </div>
-
-        {jsonOutput && <JsonDisplay json={jsonOutput} />}
+      </div>
+      <div className="w-full px-4">
+        <div className="max-w-5xl mx-auto">
+          <Footer />
+        </div>
       </div>
     </div>
   );

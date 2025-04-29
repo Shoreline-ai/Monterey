@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ConvertibleBondsBacktest from './pages/ConvertibleBondsBacktest';
-import './App.css';
 
 function PrivateRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
