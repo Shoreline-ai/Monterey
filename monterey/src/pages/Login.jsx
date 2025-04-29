@@ -13,10 +13,19 @@ export default function Login() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error when user starts typing
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate empty fields
+    if (!formData.username.trim() || !formData.password.trim()) {
+      setError('Username and password are required');
+      return;
+    }
+
     setError('');
     setLoading(true);
 
@@ -52,7 +61,7 @@ export default function Login() {
       }
     >
       {error && (
-        <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded text-sm">
+        <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded text-sm mb-4">
           {error}
         </div>
       )}
@@ -63,6 +72,8 @@ export default function Login() {
           placeholder="Username"
           value={formData.username}
           onChange={handleChange}
+          required
+          aria-required="true"
         />
         <Input
           icon={<FaLock />}
@@ -71,6 +82,8 @@ export default function Login() {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
+          required
+          aria-required="true"
         />
         <button
           type="submit"
