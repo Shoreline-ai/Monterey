@@ -1,0 +1,53 @@
+name: Deploy Frontend + Backend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # === 构建前端 ===
+      - name: Build frontend
+        run: |
+          cd monterey
+          npm install
+          npm run build
+
+      # === 上传前端 ===
+      - name: Upload frontend to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "monterey/dist/*"
+          target: "/www/wwwroot/convertedbondweb/monterey/build"
+
+      # === 上传后端 ===
+      - name: Upload backend to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "monterey-core/*"
+          target: "/www/wwwroot/convertedbondweb/monterey_backend"
+
+      # === 执行 start.sh 启动后端服务 ===
+      - name: Restart backend via start.sh
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /www/wwwroot/convertedbondweb/monterey_backend
+            chmod +x start.sh
+            pkill -f gunicorn || true
+            ./start.sh
