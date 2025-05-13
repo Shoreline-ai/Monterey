@@ -49,5 +49,4 @@ jobs:
           script: |
             cd /www/wwwroot/convertedbondweb/monterey_backend
             chmod +x start.sh
-            pkill -f gunicorn || true
-            ./start.sh
+            btpython restart monterey_backend

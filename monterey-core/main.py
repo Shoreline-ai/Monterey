@@ -11,13 +11,7 @@ import httpx
 import logging
 import yaml
 
-# Read config.yml
-def load_config():
-    with open('config.yml', 'r') as file:
-        return yaml.safe_load(file)
-
-config = load_config()
-env = config.get('env', 'local')
+env = os.getenv('ENV', 'local')
 
 # Environment-specific configurations
 ENV_CONFIG = {
@@ -48,6 +42,8 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger('server')
+
+logger.info(f"Current environment: {env}")
 
 # Models
 class UserRegister(BaseModel):
