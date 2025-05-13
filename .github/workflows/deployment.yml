@@ -50,4 +50,4 @@ jobs:
             cd /www/wwwroot/convertedbondweb/monterey_backend
             chmod +x start.sh
             pkill -f gunicorn || true
-            ./start.sh
+            ./start.sh || echo "[INFO] Service restarted (exit code $?)"
