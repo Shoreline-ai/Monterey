@@ -26,8 +26,9 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "monterey/dist/*"
+          source: "monterey/dist/**"
           target: "/www/wwwroot/convertedbondweb/monterey/build"
+          strip_components: 2
 
       # === 上传后端 ===
       - name: Upload backend to server
@@ -38,4 +39,3 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "monterey-core/*"
           target: "/www/wwwroot/convertedbondweb/monterey_backend"
-          
