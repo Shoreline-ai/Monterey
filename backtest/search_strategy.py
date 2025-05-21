@@ -329,6 +329,35 @@ res['cost'] = pos_df.diff().abs().sum(axis=1) * c_rate / (pos_df.shift().sum(axi
 res.iloc[0, 1] = 0.5 * c_rate# 修正首行手续费
 res['time_return'] = (res['time_return'] + 1) * (1 - res['cost']) - 1# 扣除手续费及佣金后的回报
 
+# 确保数据格式正确
+clean_returns = res.time_return.astype(float)
+if not isinstance(clean_returns.index, pd.DatetimeIndex):
+    clean_returns.index = pd.to_datetime(clean_returns.index)
+clean_returns = clean_returns.sort_index()
 
-# qs.reports.full(res.time_return, benchmark=index[benchmark], periods_per_year=12)
-qs.reports.full(res.time_return, benchmark=index[benchmark])
+# 处理基准数据
+clean_benchmark = None
+if benchmark is not None:
+    clean_benchmark = index[benchmark].astype(float)
+    if not isinstance(clean_benchmark.index, pd.DatetimeIndex):
+        clean_benchmark.index = pd.to_datetime(clean_benchmark.index)
+    clean_benchmark = clean_benchmark.sort_index()
+    
+    # 对齐数据
+    clean_benchmark = clean_benchmark.reindex(clean_returns.index)
+
+# 使用 resample 预处理数据
+if clean_returns.index.duplicated().any():
+    clean_returns = clean_returns.resample('D').last()
+if clean_benchmark is not None and clean_benchmark.index.duplicated().any():
+    clean_benchmark = clean_benchmark.resample('D').last()
+
+# 生成报告
+from .utils import generate_qs_report
+
+generate_qs_report(
+    returns=res.time_return,
+    benchmark=index[benchmark] if benchmark else None,
+    title="Strategy Performance Report",
+    periods_per_year=252
+)
